@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Body, Depends, Query, HTTPException, status, Path
-from app.schemas.author import CreateAuthor, AuthorResponse
+from app.schemas.author import CreateAuthor, AuthorResponse, AuthorResponsewithBooks
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 from app import crud
@@ -63,3 +63,15 @@ async def delete_author(
     session: AsyncSession = Depends(get_session_with_db),
 ):
     return await crud.delete_author_crud(author_id=author_id, session=session)
+
+
+@router.get("/{author_id}/books", response_model=AuthorResponsewithBooks)
+async def get_author_with_more_books(
+    author_id: Annotated[
+        int, Path(gt=0, description="ID Автора для вывода дополнительной информации")
+    ],
+    session: AsyncSession = Depends(get_session_with_db),
+):
+    return await crud.get_authors_with_more_books_crud(
+        author_id=author_id, session=session
+    )

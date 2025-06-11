@@ -3,6 +3,7 @@ from app.schemas.author import CreateAuthor
 from app.models.author import AuthorOrm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 
 async def create_author_crud(author_in: CreateAuthor, session: AsyncSession):
@@ -34,3 +35,19 @@ async def delete_author_crud(author_id: int, session: AsyncSession):
     await session.delete(current_author)
     await session.commit()
     return {"message": "Автор удален"}
+
+
+async def get_authors_with_more_books_crud(author_id: int, session: AsyncSession):
+    author = await session.get(AuthorOrm, author_id)
+    if not author:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Автор не найден",
+        )
+    stmt = (
+        select(AuthorOrm)
+        .where(AuthorOrm.id == author_id)
+        .options(selectinload(AuthorOrm.books))
+    )
+    result = await session.execute(stmt)
+    return result.scalars().first()

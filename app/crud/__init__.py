@@ -3,6 +3,7 @@ from app.crud.author import (
     get_list_authors_crud,
     get_author_by_id_crud,
     delete_author_crud,
+    get_authors_with_more_books_crud,
 )
 from app.crud.book import (
     create_book_crud,

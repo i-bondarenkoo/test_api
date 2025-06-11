@@ -17,6 +17,11 @@ class BookResponse(BookCreate):
     model_config = ConfigDict(from_attributes=True)
 
 
+class BookResponseWithOutID(BaseModel):
+    title: str
+    published_year: int
+
+
 class BookUpdatePatch(BaseModel):
     title: str | None = None
     published_year: int | None = None
