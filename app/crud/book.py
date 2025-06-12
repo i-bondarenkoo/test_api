@@ -1,14 +1,16 @@
-from httpx import options
-from app.crud import author
 from app.schemas.book import BookCreate, BookUpdatePatch
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.book import BookOrm
+from app.models.author import AuthorOrm
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from fastapi import HTTPException, status
 
 
 async def create_book_crud(book_in: BookCreate, session: AsyncSession):
+    author = await session.get(AuthorOrm, book_in.author_id)
+    if not author:
+        raise HTTPException(status_code=404, detail="Автор не найден")
     new_book = BookOrm(**book_in.model_dump())
     session.add(new_book)
     await session.commit()
