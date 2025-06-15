@@ -72,3 +72,21 @@ async def get_book_with_authors_crud(book_id: int, session: AsyncSession):
     )
     result = await session.execute(stmt)
     return result.scalars().first()
+
+
+async def debug_query(session: AsyncSession):
+    # все поля из таблицы BookOrm
+    # Получаю список орм объектов
+    # stmt = select(BookOrm)
+    # result = await session.execute(stmt)
+    # return result.scalars().all()
+    # ------
+    # stmt2 = select(BookOrm)
+    # result = await session.execute(stmt2)
+    # for row in result.all():
+    #     print(row)
+    # ----
+    stmt = select(BookOrm.title)
+    result = await session.execute(stmt)
+    res = result.scalars().one_or_none()
+    return res

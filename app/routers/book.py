@@ -34,6 +34,13 @@ async def create_book(
     return await crud.create_book_crud(book_in=book_in, session=session)
 
 
+@router.get("/debug_query")
+async def debug_query_route(session: AsyncSession = Depends(get_session_with_db)):
+    data = await crud.debug_query(session=session)
+    print(data)
+    return {"test_reponse": "ok"}
+
+
 @router.get("/", response_model=list[BookResponse])
 async def get_list_book(
     session: AsyncSession = Depends(get_session_with_db),
